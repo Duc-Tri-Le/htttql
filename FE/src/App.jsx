@@ -21,13 +21,11 @@ const App = () => {
   });
   const [rowRoom, setRowRoom] = useState({
     MaDayPhong: "",
-    TenDayPhong: "",
     SoPhongCuaDay: "",
   });
   const [room, setRoom] = useState({
     MaDayPhong: "",
     MaPhong: "",
-    TenPhong: "",
     SucChua: "",
     GiaPhong: "",
   });
@@ -100,10 +98,8 @@ const App = () => {
   };
 
   const updateIfRowRoom = {
-    TenDayPhong: "dayphong2",
   };
   const updateIfRoom = {
-    TenPhong: "phong2",
     GiaPhong: "2.000.000",
   };
 
@@ -229,9 +225,8 @@ const App = () => {
     MaSV: "",
     MaPhong: "",
     MaQl: "",
-    TenHD: "",
   });
-
+  const [hopdong, sethopdong] = useState("")
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -262,6 +257,25 @@ const App = () => {
       }
     );
   };
+  const getAllContract = async () => {
+    const res = await fetch(`${URL}/contract/getAllContract`,{
+      method:"GET",
+      headers:{
+        "Content-Type":"application/json",
+      },
+    })
+  }
+  const extendContract = async () => {
+    const res = await fetch(`${URL}/contract/extendContract?MaHD=HD001`,{
+      method:"PATCH",
+      headers:{
+        "Content-Types":"application/json",
+      },
+    })
+    const hopdonggiahan = await res.json();
+    sethopdong(hopdonggiahan.result)
+  }
+  console.log(new Date(hopdong[0].NgayLap).toLocaleString('vi-VN'));
   return (
     <div>
       {/* sinh vien */}
@@ -436,13 +450,6 @@ const App = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-        <input
-          name="TenHD"
-          placeholder="Tên hợp đồng"
-          value={formData.TenHD}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
         <button
           onClick={handleCreateContract}
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
@@ -450,7 +457,10 @@ const App = () => {
           Tạo hợp đồng
         </button>
         <button onClick={cancelContract}>huy hop dong</button>
+        <button onClick={getAllContract}>lay hop dong</button>
+        <button onClick={extendContract}>gia han hop dong</button>
       </div>
+      {/* hoa don */}
     </div>
   );
 };

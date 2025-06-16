@@ -1,7 +1,9 @@
 import {
   cancelContractModel,
   createContractModel,
+  extendContractModel,
   generateMaHD,
+  getAllContractModel,
 } from "../models/contractModel.js";
 import {
   getCapacityRoomNow,
@@ -23,7 +25,7 @@ const createContract = async (req, res) => {
     const MaHD = await generateMaHD();
     const NgayLap = new Date();
     const NgayHetHan = new Date(NgayLap);
-    NgayHetHan.setFullYear(NgayHetHan.getFullYear() + 1);
+    NgayHetHan.setMonth(NgayHetHan.getMonth() + 3);
 
     const checkCapa = await checkCapacityRoom(MaPhong);
     if (!checkCapa)
@@ -36,7 +38,6 @@ const createContract = async (req, res) => {
       MaPhong,
       MaQl,
       MaHD,
-      TenHD,
       NgayLap,
       NgayHetHan,
       (err) => {
@@ -87,6 +88,35 @@ const cancelContract = async (req, res) => {
   }
 };
 
-const extendContract = async () => {};
+const extendContract = async (req, res) => {
+  try {
+    const { MaHD } = req.query;
+    const NgayLap = new Date();
+    const NgayHetHan = new Date(NgayLap);
+    NgayHetHan.setMonth(NgayHetHan.getMonth() + 3);
+    extendContractModel(NgayLap, NgayHetHan, MaHD, (err, result) => {
+      if (err)
+        return res.status(500).json({ message: "ko ga han dc", error: err });
+      else
+        return res
+          .status(200)
+          .json({ message: "gia han thanh cong", result: result });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "loi he thong", error: error });
+  }
+};
 
-export { createContract, extendContract, cancelContract };
+const getAllContract = async (req, res) => {
+  try {
+    const hopdong = await getAllContractModel();
+    if (!hopdong)
+      return res.status(404).json({ message: "ko lay dc hop dong" });
+    return res
+      .status(200)
+      .json({ message: "lay danh sach thanh cong", hopdong: hopdong });
+  } catch (error) {
+    return res.status(500).json({ message: "loi he thong", error: error });
+  }
+};
+export { createContract, extendContract, cancelContract, getAllContract };
