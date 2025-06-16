@@ -21,6 +21,9 @@ app.use(cors())
 //ket noi DB
 connectDB()
 
+//dotenv
+dotenv.config()
+
 //router
 app.use("/api/user", userRouter)
 app.use("/api/room", roomRouter)

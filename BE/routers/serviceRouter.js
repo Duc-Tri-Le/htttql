@@ -1,11 +1,12 @@
 import express from "express"
-import { addService, deleteService, updateService } from "../controllers/serviceController"
-import { authentication } from "../middleware/auth"
+import { addService, deleteService, getAllService, updateService } from "../controllers/serviceController.js"
+
 
 const serviceRouter = express.Router()
 
-serviceRouter.post("/addService",authentication, addService)
-serviceRouter.patch("/updateService",authentication, updateService)
-serviceRouter.delete("/deleteService",authentication, deleteService)
+serviceRouter.post("/addService", addService)
+serviceRouter.patch("/updateService", updateService)
+serviceRouter.delete("/deleteService", deleteService)
+serviceRouter.get("/getAllService", getAllService)
 
 export default serviceRouter

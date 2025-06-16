@@ -1,8 +1,24 @@
 import mysql from "mysql2";
 
-const createAdmin = async () => {
-
-}
+const createAdmin = async (callback) => {
+  const sql =
+    "INSERT INTO nguoiquanly(MaQl, TenQL, DiaChi, GioiTinh, ChucVu, SDT, email, NamSinh, name, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  connection.query(sql, [
+    "QL1",
+    "Nguyen Van A",
+    "Ha Noi",
+    "Nam",
+    "quan ly",
+    "01234567",
+    "quanly@gmail.com",
+    "1980",
+    "root",
+    "12345678",
+  ], (err, result) =>{
+    if(err) return callback(err)
+    else return callback(null, result[0])
+  });
+};
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -19,7 +35,6 @@ const connectDB = async () => {
       console.log("Kết nối MySQL thành công!");
     }
   });
-  await createAdmin();
 };
 
-export { connectDB };
+export { connectDB, connection };

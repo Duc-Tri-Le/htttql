@@ -1,9 +1,9 @@
 import express from "express"
-import { createBill } from "../controllers/billController"
-import { authentication } from "../middleware/auth"
+import { createBill } from "../controllers/billController.js"
+import { authentication } from "../middleware/auth.js"
 
 const billRouter = express.Router()
 
-billRouter.post("/createBill",authentication, createBill)
+billRouter.post("/createBill", createBill)
 
 export default billRouter
