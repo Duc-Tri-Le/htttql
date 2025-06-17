@@ -47,4 +47,12 @@ const getCapacityRoomModel = async (MaPhong) => {
     return SucChua
 }
 
-export {getAllRoomModel,deleteRoomModel,addRoomModel,updateRoomModel, getCapacityRoomModel}
+const getAllContractRoomModel = async (MaPhong) => {
+    const sql = "SELECT MaSV FROM phong WHERE MaPhong = ?"
+    const [sinhVien] = await connection.promise().query(sql, [MaPhong])
+    return sinhVien.length > 0 ? sinhVien : 0;
+}
+
+
+
+export {getAllRoomModel,deleteRoomModel,addRoomModel,updateRoomModel, getCapacityRoomModel, getAllContractRoomModel}

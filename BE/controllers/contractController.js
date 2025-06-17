@@ -1,9 +1,11 @@
 import {
   cancelContractModel,
+  checkStudentRoomModel,
   createContractModel,
   extendContractModel,
   generateMaHD,
   getAllContractModel,
+  getContractModel,
 } from "../models/contractModel.js";
 import {
   getCapacityRoomNow,
@@ -12,9 +14,9 @@ import {
 import { getCapacityRoomModel } from "../models/roomModel.js";
 
 const checkCapacityRoom = async (MaPhong) => {
-  console.log("bat dau check");
   const sucChua = await getCapacityRoomModel(MaPhong);
   const soSVHT = await getCapacityRoomNow(MaPhong);
+  if (sucChua === 0) return -1;
   if (parseInt(sucChua) > parseInt(soSVHT)) return 1;
   return 0;
 };
@@ -28,11 +30,19 @@ const createContract = async (req, res) => {
     NgayHetHan.setMonth(NgayHetHan.getMonth() + 3);
 
     const checkCapa = await checkCapacityRoom(MaPhong);
-    if (!checkCapa)
+    if (checkCapa === 0)
       return res.status(500).json({
         message: "so sinh vien trong phong da day.Vui long chon phong khac!",
       });
-
+    if (checkCapa === -1)
+      return res.status(500).json({
+        message: "phong khong ton tai!",
+      });
+    const check = await checkStudentRoomModel(MaSV);
+    if (check === null)
+      return res
+        .status(500)
+        .json({ message: "sv da co phong, vui long roi khoi phong" });
     createContractModel(
       MaSV,
       MaPhong,
@@ -94,16 +104,32 @@ const extendContract = async (req, res) => {
     const NgayLap = new Date();
     const NgayHetHan = new Date(NgayLap);
     NgayHetHan.setMonth(NgayHetHan.getMonth() + 3);
+
+    const contract = await getContractModel(MaHD);
+    const NgayHetHanCu = new Date(contract.NgayHetHan);
+
+    const diffTime = NgayLap.getTime() - NgayHetHanCu.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays < -3 || diffDays > 3) {
+      return res.status(400).json({
+        message:
+          "Không thể gia hạn: Ngày lập không nằm trong khoảng ±3 ngày so với ngày hết hạn cũ.",
+      });
+    }
     extendContractModel(NgayLap, NgayHetHan, MaHD, (err, result) => {
-      if (err)
-        return res.status(500).json({ message: "ko ga han dc", error: err });
-      else
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Không gia hạn được", error: err });
+      } else {
         return res
           .status(200)
-          .json({ message: "gia han thanh cong", result: result });
+          .json({ message: "Gia hạn thành công", result: result });
+      }
     });
   } catch (error) {
-    return res.status(500).json({ message: "loi he thong", error: error });
+    return res.status(500).json({ message: "Lỗi hệ thống", error: error });
   }
 };
 

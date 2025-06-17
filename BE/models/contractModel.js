@@ -12,7 +12,13 @@ const generateMaHD = async () => {
   return newMaHD;
 };
 
-const createContractModel = (
+const checkStudentRoomModel = async (MaSV) => {
+  const sql = "SELECT MaPhong FROM hopdong WHERE MaSV = ?";
+  const maphong = await connection.promise().query(sql, [MaSV])
+  return maphong.length > 0 ? maphong[0].MaPhong : null;
+} 
+
+const createContractModel = async (
   MaSV,
   MaPhong,
   MaQl,
@@ -20,7 +26,7 @@ const createContractModel = (
   NgayLap,
   NgayHetHan,
   callback
-) => {
+) =>  {
   const sql =
     "INSERT INTO hopdong(MaSV, MaPhong, MaQl, MaHD, NgayLap, NgayHetHan) VALUES (?,?,?,?,?,?)";
   connection.query(
@@ -63,4 +69,10 @@ const getAllContractModel = async () => {
   return hopdong;
 };
 
-export { createContractModel, generateMaHD, cancelContractModel, getAllContractModel, extendContractModel };
+const getContractModel = async (MaHD) => {
+  const sql = `SELECT NgayHetHan FROM hopdong WHERE MaHD = ?`
+  const [row] = await connection.promise().query(sql, [MaHD])
+  return row[0].NgayHetHan
+}
+
+export { createContractModel, generateMaHD, cancelContractModel, getAllContractModel, extendContractModel, getContractModel, checkStudentRoomModel};

@@ -275,7 +275,7 @@ const App = () => {
     const hopdonggiahan = await res.json();
     sethopdong(hopdonggiahan.result)
   }
-  console.log(new Date(hopdong[0].NgayLap).toLocaleString('vi-VN'));
+  // console.log(hopdong[0].NgayLap ? new Date(hopdong[0].NgayLap).toLocaleString('vi-VN') : 0);
   return (
     <div>
       {/* sinh vien */}
