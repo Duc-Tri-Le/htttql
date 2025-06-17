@@ -47,10 +47,10 @@ const getCapacityRoomModel = async (MaPhong) => {
     return SucChua
 }
 
-const getAllContractRoomModel = async (MaPhong) => {
-    const sql = "SELECT MaSV FROM phong WHERE MaPhong = ?"
-    const [sinhVien] = await connection.promise().query(sql, [MaPhong])
-    return sinhVien.length > 0 ? sinhVien : 0;
+const getAllContractRoomModel = async (MaPhong, MaSV) => {
+    const sql = "SELECT MaHD FROM phong WHERE MaPhong = ?"
+    const [hopdong] = await connection.promise().query(sql, [MaPhong])
+    return hopdong.length > 0 ? hopdong : 0;
 }
 
 
