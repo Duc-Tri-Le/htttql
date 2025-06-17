@@ -2,6 +2,7 @@ import { updateRoomRowRoomModel } from "../models/historyRoomRowRoomModel.js";
 import {
   addRoomModel,
   deleteRoomModel,
+  generateMaPhong,
   updateRoomModel,
 } from "../models/roomModel.js";
 
@@ -10,14 +11,13 @@ import { checkCapacityRowRoom } from "./rowOfRoomController.js";
 const addRoom = async (req, res) => {
   const room = req.body;
   const checkCapacity = await checkCapacityRowRoom(room.MaDayPhong)
-  
+  const MaPhong = await generateMaPhong()
   if(!checkCapacity) return res.status(404).json({message:"day phong da day. Vui long chon day khac !"}) 
   addRoomModel(room, (err) => {
     if (err) {
       return res.status(500).json({ message: "ko them dc phong", error: err });
     }
     const MaDayPhong = room.MaDayPhong;
-    const MaPhong = room.MaPhong;
 
     updateRoomRowRoomModel(MaDayPhong,MaPhong, "add", (err, result) => {
       if (err) {

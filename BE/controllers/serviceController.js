@@ -2,13 +2,15 @@ import {
   addServiceModel,
   allServiceModel,
   deleteServiceModel,
+  generateMaDV,
   updateServiceModel,
 } from "../models/serviceModel.js";
 
 const addService = async (req, res) => {
   try {
     const service = req.body;
-     addServiceModel(service, (err, result) => {
+    const MaDV = await generateMaDV()
+     addServiceModel(MaDV,service, (err, result) => {
       if (err)
         return res
           .status(500)

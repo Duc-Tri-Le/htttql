@@ -1,9 +1,20 @@
 import { connection } from "../config/connectDb.js";
 
-const addRowRoomModel = async (rowRoom, callback) => {
-  const { MaDayPhong, SoPhongCuaDay } = rowRoom;
+const generateMaDayPhong = async () => {
   const sql =
-    "INSERT INTO dayphong(MaDayPhong, SoPhongCuaDay) VALUES(?,?,?)";
+    "SELECT MaDayPhong FROM dayphong ORDER BY MaDayPhong DESC LIMIT 1";
+  const [rows] = await connection.promise().query(sql);
+  if (rows.length === 0) return "DP001";
+
+  const lastMaDayPhong = rows[0].MaDayPhong;
+  const numberPart = parseInt(lastMaDayPhong.slice(2));
+  const newNumber = numberPart + 1;
+  return "DP" + newNumber.toString().padStart(3, "0");
+};
+
+const addRowRoomModel = async (MaDayPhong,rowRoom, callback) => {
+  const {SoPhongCuaDay } = rowRoom;
+  const sql = "INSERT INTO dayphong(MaDayPhong, SoPhongCuaDay) VALUES(?,?,?)";
   connection.query(
     sql,
     [MaDayPhong, TenDayPhong, SoPhongCuaDay],
@@ -42,7 +53,7 @@ const deleteRowRoomModel = async (MaDayPhong, callback) => {
   });
 };
 
-const getAllRowRoomModel =  async(callback) => {
+const getAllRowRoomModel = async (callback) => {
   const sql = "SELECT * FROM dayphong";
   connection.query(sql, (err, result) => {
     if (err) return callback(err);
@@ -54,7 +65,13 @@ const capacityRowRoomModel = async (MaDayPhong) => {
   const sql = "SELECT SoPhongCuaDay FROM dayphong WHERE MaDayPhong = ?";
   const [rows] = await connection.promise().query(sql, [MaDayPhong]);
   return rows.length > 0 ? rows[0].SoPhongCuaDay : null;
-}
+};
 
-
-export { addRowRoomModel, updateRowRoomModel, deleteRowRoomModel, getAllRowRoomModel, capacityRowRoomModel };
+export {
+  addRowRoomModel,
+  updateRowRoomModel,
+  deleteRowRoomModel,
+  getAllRowRoomModel,
+  capacityRowRoomModel,
+  generateMaDayPhong,
+};

@@ -9,10 +9,10 @@ const createBill = async (req, res) => {
     const allContract = await getAllContractModel(MaPhong);
 
     for (const contract of allContract) {
-      await addBillModelAsync(contract.MaHD, MaHoaDon);
+      await addBillModel(contract.MaHD, MaHoaDon);
 
       for (const service of infService) {
-        await addBillServiceModelAsync(MaHoaDon, service);
+        await addBillServiceModel(MaHoaDon, service);
       }
     }
 

@@ -1,7 +1,18 @@
 import { connection } from "../config/connectDb.js";
 
-const addServiceModel = async (service, callback) => {
-  const { MaDV, TenDV, GiaDV, units } = service;
+const generateMaDV = async () => {
+  const sql = "SELECT MaDV FROM dichvu ORDER BY MaDV DESC LIMIT 1";
+  const [rows] = await connection.promise().query(sql);
+  if (rows.length === 0) return "DV001";
+
+  const lastMaDV = rows[0].MaDV;
+  const numberPart = parseInt(lastMaDV.slice(2));
+  const newNumber = numberPart + 1;
+  return "DV" + newNumber.toString().padStart(3, "0");
+};
+
+const addServiceModel = async (MaDV, service, callback) => {
+  const { TenDV, GiaDV, units } = service;
   const sql = "INSERT INTO dichvu(MaDV, TenDV, GiaDV, units) VALUES(?,?,?,?)";
   connection.query(sql, [MaDV, TenDV, GiaDV, units], (err) => {
     if (err) return callback(err);
@@ -58,4 +69,5 @@ export {
   updateServiceModel,
   deleteServiceModel,
   allServiceModel,
+  generateMaDV,
 };

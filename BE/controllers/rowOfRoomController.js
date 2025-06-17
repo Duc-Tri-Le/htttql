@@ -1,10 +1,11 @@
 import { getCapacityNowRowRoomModel } from "../models/historyRoomRowRoomModel.js";
-import { addRowRoomModel, capacityRowRoomModel, deleteRowRoomModel, getAllRowRoomModel, updateRowRoomModel } from "../models/rowRoomModel.js";
+import { addRowRoomModel, capacityRowRoomModel, deleteRowRoomModel, generateMaDayPhong, getAllRowRoomModel, updateRowRoomModel } from "../models/rowRoomModel.js";
 
 const addRowRoom = async (req, res) => {
     try {
         const rowRoom = req.body;
-         addRowRoomModel(rowRoom, (err, result) => {
+        const MaDayPhong = await generateMaDayPhong()
+         addRowRoomModel(MaDayPhong,rowRoom, (err, result) => {
             if(err) return res.status(500).json({message: "ko them dc day phong", err:err})
             if(result) return res.status(200).json({message:"them day phong thanh cong", result:result})
         })
